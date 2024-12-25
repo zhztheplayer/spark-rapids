@@ -156,8 +156,8 @@ object GpuDeviceManager extends Logging {
       // uses that GPU. We only need to initialize RMM once per Executor because we are relying on
       // only 1 GPU per executor.
       // If Spark didn't provide the address we just use the default GPU.
-      val addr = initializeGpu(resources, conf)
-      initializeMemory(addr)
+      initializeGpu(resources, conf)
+//      initializeMemory(addr)
     }
   }
 

@@ -25,7 +25,7 @@ import scala.collection.JavaConverters._
 import scala.sys.process._
 import scala.util.Try
 
-import ai.rapids.cudf.{Cuda, CudaException, CudaFatalException, CudfException, MemoryCleaner}
+import ai.rapids.cudf.{ CudaException, CudaFatalException, CudfException, MemoryCleaner}
 import com.nvidia.spark.rapids.RapidsConf.AllowMultipleJars
 import com.nvidia.spark.rapids.filecache.{FileCache, FileCacheLocalityManager, FileCacheLocalityMsg}
 import com.nvidia.spark.rapids.jni.GpuTimeZoneDB
@@ -378,7 +378,7 @@ class RapidsDriverPlugin extends DriverPlugin with Logging {
     val sparkConf = pluginContext.conf
     RapidsPluginUtils.fixupConfigsOnDriver(sparkConf)
     val conf = new RapidsConf(sparkConf)
-    RapidsPluginUtils.detectMultipleJars(conf)
+//    RapidsPluginUtils.detectMultipleJars(conf)
     RapidsPluginUtils.logPluginMode(conf)
     GpuCoreDumpHandler.driverInit(sc, conf)
 
@@ -422,10 +422,10 @@ class RapidsExecutorPlugin extends ExecutorPlugin with Logging {
       pluginContext: PluginContext,
       extraConf: java.util.Map[String, String]): Unit = {
     try {
-      if (Cuda.getComputeCapabilityMajor < 6) {
-        throw new RuntimeException(s"GPU compute capability ${Cuda.getComputeCapabilityMajor}" +
-          " is unsupported, requires 6.0+")
-      }
+//      if (Cuda.getComputeCapabilityMajor < 6) {
+//        throw new RuntimeException(s"GPU compute capability ${Cuda.getComputeCapabilityMajor}" +
+//          " is unsupported, requires 6.0+")
+//      }
       // if configured, re-register checking leaks hook.
       reRegisterCheckLeakHook()
 
@@ -434,7 +434,7 @@ class RapidsExecutorPlugin extends ExecutorPlugin with Logging {
       val conf = new RapidsConf(extraConf.asScala.toMap)
 
       // Fail if there are multiple plugin jars in the classpath.
-      RapidsPluginUtils.detectMultipleJars(conf)
+//      RapidsPluginUtils.detectMultipleJars(conf)
 
       // Compare if the cudf version mentioned in the classpath is equal to the version which
       // plugin expects. If there is a version mismatch, throw error. This check can be disabled

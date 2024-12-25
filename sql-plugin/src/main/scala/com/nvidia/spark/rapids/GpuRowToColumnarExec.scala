@@ -29,6 +29,7 @@ import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.{Attribute, BoundReference, SortOrder, SpecializedGetters, UnsafeRow}
 import org.apache.spark.sql.catalyst.expressions.codegen.{CodeAndComment, CodeFormatter, CodegenContext, CodeGenerator, GenerateUnsafeProjection}
 import org.apache.spark.sql.catalyst.plans.physical.Partitioning
+import org.apache.spark.sql.execution.RowToColumnarTransition
 import org.apache.spark.sql.execution.SparkPlan
 import org.apache.spark.sql.rapids.execution.TrampolineUtil
 import org.apache.spark.sql.types._
@@ -859,7 +860,7 @@ object GeneratedInternalRowToCudfRowIterator extends Logging {
  * GPU version of row to columnar transition.
  */
 case class GpuRowToColumnarExec(child: SparkPlan, goal: CoalesceSizeGoal)
-  extends ShimUnaryExecNode with GpuExec {
+  extends ShimUnaryExecNode with GpuExec with RowToColumnarTransition {
   import GpuMetric._
 
   override def output: Seq[Attribute] = child.output

@@ -45,8 +45,9 @@ class HashSortOptimizeSuite extends SparkQueryCompareTestSuite with FunSuiteWith
   }
 
   private val sparkConf = new SparkConf()
-      .set(RapidsConf.SQL_ENABLED.key, "true")
-      .set(RapidsConf.ENABLE_HASH_OPTIMIZE_SORT.key, "true")
+    .set(RapidsConf.SQL_ENABLED.key, "true")
+    .set(RapidsConf.ENABLE_HASH_OPTIMIZE_SORT.key, "true")
+    .set("spark.sql.adaptive.enabled", "false")
 
   /**
    * Find the first GPU optimize sort in the plan and verify it has been inserted after the
@@ -159,6 +160,7 @@ class HashSortOptimizeSuite extends SparkQueryCompareTestSuite with FunSuiteWith
       val df = spark.sql("select a+1, count(*) from " +
         "(SELECT a FROM t1 group by a) t " +
         "group by a+1")
+      df.explain()
       df.collect()
 
       val sortExec = findOperator(df.queryExecution.executedPlan,
